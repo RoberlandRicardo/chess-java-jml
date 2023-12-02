@@ -13,7 +13,17 @@ public class Board {
 	//@ public model Piece[][] _pieces;
     //@ private represents _pieces = pieces;
 	
-	//@ requires rows < 1 && cols < 1;
+	//@ requires rows < 1 || cols < 1;
+	//@ signals_only BoardException;
+	//@ ensures false;
+	//@ also
+	//@ requires rows > 1 && cols > 1;
+	//@ requires rows < Integer.MAX_VALUE && cols < Integer.MAX_VALUE;
+	//@ ensures _rows == rows;
+	//@ ensures _cols == cols;
+	//@ ensures \result.lenght == rows;
+	//@ ensures \result[0].lenght == cols;
+	//@ ensures true;
 	public Board (int rows, int cols) {
 		if (rows < 1 || cols < 1) {
 			throw new BoardException("Error creating board: there must be at least 1 row and 1 column");
@@ -23,14 +33,17 @@ public class Board {
 		pieces = new Piece[rows][cols];
 	}
 	
+	//@ ensures \result == _rows;
 	public int getRows() {
 		return rows;
 	}
 	
+	//@ ensures \result == _cols;
 	public int getCols() {
 		return cols;
 	}
 	
+	//@ ensures \result == _pieces;
 	public Piece[][] getPieces(){
 		return pieces;
 	}
@@ -51,6 +64,7 @@ public class Board {
 		return pieces[row][col];
 	}
 	
+	
 	public /*@ non_null */ Piece getPiece(Position position) {
 		if (!positionExists(position)) {
 			throw new BoardException("Erro to get the piece: The position: "+ position + " don't exists");
@@ -68,6 +82,13 @@ public class Board {
 		piece.position = position;
 	}
 	
+	//@ requires 0 <= position.getRows() < _rows;
+	//@ requires 0 <= position.getCols() < _cols;
+	//@ requires haveAPiece(position);
+	//@ ensures _pieces[position.getRow()][position.getColumn()] == null;
+	//@ ensures \result instanceof Piece;
+	//@ ensures \result != null;
+	//@ ensures true;
 	public Piece removePiece(Position position) {
 		if (!positionExists(position)) {
 			throw new BoardException("Erro to place the piece: The position: "+ position + " don't exists");
@@ -81,11 +102,23 @@ public class Board {
 		return aux;
 	}
 	
-	public boolean positionExists(Position position) {
+	//@ requires rows > position.getRow() >= 0;
+	//@ requires cols > position.getColumn() >= 0;
+	//@ ensures \result == true;
+	//@ also
+	//@ requires position.getRow() >= rows || position.getRow() < 0;
+	//@ requires position.getColumn() >= cols || position.getColumn() < 0;
+	//@ ensures \result == false;
+	public boolean /*@ non_null */ positionExists(Position position) {
 		return position.getRow() >= 0 && position.getRow() < rows 
 				&& position.getColumn() >= 0 && position.getColumn() < cols;
 	}
 	
+	//@ requires getPiece(position) != null;
+	//@ ensures \result == true;
+	//@ also
+	//@ requires getPiece(position) == null;
+	//@ ensures \result == false;
 	public boolean haveAPiece(Position position) {
 		return getPiece(position) != null;
 	}

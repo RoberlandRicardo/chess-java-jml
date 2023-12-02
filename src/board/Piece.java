@@ -9,7 +9,11 @@ public abstract class Piece {
 	private Color color;
 	private int moveCount;
 	
-	public Piece(Board board, Color color) {
+	// @ ensures this.board == board;
+	// @ ensures this.color == color;
+	// @ ensures this.position == null;
+	// @ pure
+	public Piece(/*@ non_null */ Board board,/*@ non_null */ Color color) {
 		this.board = board;
 		this.color = color;
 		position = null;
