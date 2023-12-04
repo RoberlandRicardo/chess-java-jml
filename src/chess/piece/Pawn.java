@@ -10,6 +10,7 @@ public class Pawn extends Piece{
 
 	private ChessMatch chessMatch;
 	
+	//@ pure
 	public Pawn(Board board, Color color, ChessMatch chessMatch) {
 		super(board, color);
 		this.chessMatch = chessMatch;

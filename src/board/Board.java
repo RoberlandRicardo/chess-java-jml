@@ -21,8 +21,6 @@ public class Board {
 	//@ requires rows < Integer.MAX_VALUE && cols < Integer.MAX_VALUE;
 	//@ ensures _rows == rows;
 	//@ ensures _cols == cols;
-	//@ ensures \result.lenght == rows;
-	//@ ensures \result[0].lenght == cols;
 	//@ ensures true;
 	public Board (int rows, int cols) {
 		if (rows < 1 || cols < 1) {
@@ -82,8 +80,8 @@ public class Board {
 		piece.position = position;
 	}
 	
-	//@ requires 0 <= position.getRows() < _rows;
-	//@ requires 0 <= position.getCols() < _cols;
+	//@ requires 0 <= position.getRow() < _rows;
+	//@ requires 0 <= position.getColumn() < _cols;
 	//@ requires haveAPiece(position);
 	//@ ensures _pieces[position.getRow()][position.getColumn()] == null;
 	//@ ensures \result instanceof Piece;
@@ -102,23 +100,24 @@ public class Board {
 		return aux;
 	}
 	
-	//@ requires rows > position.getRow() >= 0;
-	//@ requires cols > position.getColumn() >= 0;
+	//@ requires _rows > position.getRow() >= 0;
+	//@ requires _cols > position.getColumn() >= 0;
 	//@ ensures \result == true;
 	//@ also
-	//@ requires position.getRow() >= rows || position.getRow() < 0;
-	//@ requires position.getColumn() >= cols || position.getColumn() < 0;
+	//@ requires position.getRow() >= _rows || position.getRow() < 0;
+	//@ requires position.getColumn() >= _cols || position.getColumn() < 0;
 	//@ ensures \result == false;
-	public boolean /*@ non_null */ positionExists(Position position) {
+	public /*@ non_null */ boolean positionExists(Position position) {
 		return position.getRow() >= 0 && position.getRow() < rows 
 				&& position.getColumn() >= 0 && position.getColumn() < cols;
 	}
 	
-	//@ requires getPiece(position) != null;
+	//@ requires position != null;
 	//@ ensures \result == true;
 	//@ also
-	//@ requires getPiece(position) == null;
+	//@ requires position == null;
 	//@ ensures \result == false;
+	//@ pure
 	public boolean haveAPiece(Position position) {
 		return getPiece(position) != null;
 	}

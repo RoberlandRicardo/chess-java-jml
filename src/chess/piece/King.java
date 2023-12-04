@@ -10,6 +10,7 @@ public class King extends Piece{
 	
 	private ChessMatch match;
 
+	//@ pure
 	public King(Board board, Color color, ChessMatch match) {
 		super(board, color);
 		this.match = match;

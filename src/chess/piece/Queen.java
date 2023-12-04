@@ -7,6 +7,7 @@ import chess.Color;
 
 public class Queen extends Piece{
 	
+	//@ pure
 	public Queen(Board board, Color color) {
 		super(board, color);
 		

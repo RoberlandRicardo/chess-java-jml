@@ -7,6 +7,7 @@ import chess.Color;
 
 public class Bishop extends Piece{
 
+	//@ pure
 	public Bishop(Board board, Color color) {
 		super(board, color);
 		// TODO Auto-generated constructor stub

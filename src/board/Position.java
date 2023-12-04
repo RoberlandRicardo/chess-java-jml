@@ -5,11 +5,13 @@ public class Position {
 	private Integer row;
 	private Integer col;
 	
+	//@ pure
 	public Position (int row, int col) {
 		this.row = row;
 		this.col = col;
 	}
 
+	//@ pure
 	public Integer getRow() {
 		return row;
 	}
@@ -18,6 +20,7 @@ public class Position {
 		this.row = row;
 	}
 
+	//@ pure
 	public Integer getColumn() {
 		return col;
 	}
