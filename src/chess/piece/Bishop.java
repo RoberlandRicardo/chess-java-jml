@@ -13,8 +13,10 @@ public class Bishop extends Piece{
 		// TODO Auto-generated constructor stub
 	}
 	
+	//@ ensures /result == "B";
+	//@ pure;
 	@Override
-	public String toString() {
+	public  /*@ non_null */ String toString() {
 		return "B";
 	}
 

@@ -17,7 +17,7 @@ public class Pawn extends Piece{
 	}
 
 	@Override
-	public String toString() {
+	public  /*@ non_null */ String toString() {
 		return "P";
 	}
 	

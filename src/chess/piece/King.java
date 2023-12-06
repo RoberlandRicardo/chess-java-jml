@@ -17,8 +17,10 @@ public class King extends Piece{
 		
 	}
 	
+	//@ ensures /result == "K";
+	//@ pure;
 	@Override
-	public String toString() {
+	public  /*@ non_null */ String toString() {
 		return "K";
 	}
 	

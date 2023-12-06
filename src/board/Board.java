@@ -17,7 +17,7 @@ public class Board {
 	//@ signals_only BoardException;
 	//@ ensures false;
 	//@ also
-	//@ requires rows > 1 && cols > 1;
+	//@ requires rows >= 1 && cols >= 1;
 	//@ requires rows < Integer.MAX_VALUE && cols < Integer.MAX_VALUE;
 	//@ ensures _rows == rows;
 	//@ ensures _cols == cols;

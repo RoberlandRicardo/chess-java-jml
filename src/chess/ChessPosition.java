@@ -6,6 +6,14 @@ public class ChessPosition {
 	private char col;
 	private int row;
 	
+	//@ requires col < 'a' || col > 'h' || row < 1 || row > 8;
+	//@ signals_only ChessException;
+	//@ ensures false;
+	//@ also
+	//@ requires col >= 'a' && col <= 'h' && row >= 1 && row <= 8;
+	//@ ensures this.col == col;
+	//@ ensures this.row == row;
+	//@ ensures true;
 	public ChessPosition(int row, char col) {
 		if (col < 'a' || col > 'h' || row < 1 || row > 8) 
 			throw new ChessException("Erro instantiating ChessPosition: Valid value only from a1 to h8.");
@@ -13,6 +21,7 @@ public class ChessPosition {
 		this.row = row;
 	}
 
+	//@ ensure /result == this.col;
 	public char getCol() {
 		return col;
 	}
@@ -21,6 +30,7 @@ public class ChessPosition {
 		this.col = col;
 	}
 
+	//@ ensure /result == this.row;
 	public int getRow() {
 		return row;
 	}
