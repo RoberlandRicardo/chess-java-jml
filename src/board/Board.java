@@ -2,9 +2,9 @@ package board;
 
 public class Board {
 
-	private int rows; //@ in _rows;
-	private int cols; //@ in _cols;
-	private Piece[][] pieces; //@ in _pieces;
+	private /*@ non_null */ int rows; //@ in _rows;
+	private /*@ non_null */ int cols; //@ in _cols;
+	private /*@ non_null */ Piece[][] pieces; //@ in _pieces;
 	
 	//@ public model int _rows;
     //@ private represents _rows = rows;
@@ -50,14 +50,18 @@ public class Board {
 		return pieces;
 	}
 
-	//@ requires 0 <= col;
-	//@ requires 0 <= row;
+	//@ requires 0 <= col <= 7;
+	//@ requires 0 <= row <= 7;
+	//@ requires _pieces.length >= 1;
+	//@ requires _pieces[0].length >= 1;
+	//@ requires row < _pieces.length;
+	//@ requires col < _pieces[0].length;
 	//@ ensures \result == _pieces[row][col];
 	public /*@ non_null */ Piece getPiece(int row, int col) {
 		if (!positionExists(new Position(row, col))) {
 			throw new BoardException("Erro to get the piece: The position don't exists");
 		}
-		
+		//@ show row, col, _pieces.length, _pieces[0].length;
 		return pieces[row][col];
 	}
 	
