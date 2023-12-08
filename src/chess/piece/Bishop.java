@@ -8,13 +8,14 @@ import chess.Color;
 public class Bishop extends Piece{
 
 	//@ pure
-	public Bishop(Board board, Color color) {
+	public Bishop(/*@ non_null */ Board board, /*@ non_null */ Color color) {
 		super(board, color);
 		// TODO Auto-generated constructor stub
 	}
-	
-	//@ ensures /result == "B";
-	//@ pure;
+
+	//@ also
+	//@ ensures \result == "B";
+	//@ pure helper
 	@Override
 	public  /*@ non_null */ String toString() {
 		return "B";

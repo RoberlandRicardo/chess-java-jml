@@ -13,14 +13,18 @@ public class Board {
 	//@ public model Piece[][] _pieces;
     //@ private represents _pieces = pieces;
 	
+	// public invariant 0 < _rows < Integer.MAX_VALUE;
+	// public invariant 0 < _cols < Integer.MAX_VALUE;
+	
 	//@ requires rows < 1 || cols < 1;
-	//@ signals_only BoardException;
+	//@ signals_only RuntimeException;
 	//@ ensures false;
 	//@ also
 	//@ requires rows >= 1 && cols >= 1;
 	//@ requires rows < Integer.MAX_VALUE && cols < Integer.MAX_VALUE;
 	//@ ensures _rows == rows;
 	//@ ensures _cols == cols;
+	//@ signals_only \nothing;
 	//@ ensures true;
 	public Board (int rows, int cols) {
 		if (rows < 1 || cols < 1) {
@@ -45,28 +49,25 @@ public class Board {
 	public Piece[][] getPieces(){
 		return pieces;
 	}
-	
-	//@ requires 0 <= row < _rows;
-	//@ requires 0 <= col < _cols;
+
+	//@ requires 0 <= col;
+	//@ requires 0 <= row;
 	//@ ensures \result == _pieces[row][col];
-	//@ ensures true;
-	//@ also
-	//@ requires 0 > row || row > _rows || 0 > col || col > _cols;
-	//@ signals (BoardException e) 0 <= row < _rows;
-	//@ signals_only BoardException;
-	//@ ensures false;
 	public /*@ non_null */ Piece getPiece(int row, int col) {
 		if (!positionExists(new Position(row, col))) {
 			throw new BoardException("Erro to get the piece: The position don't exists");
 		}
+		
 		return pieces[row][col];
 	}
 	
-	
+	//@ requires 0 <= position.getRow();
+	//@ requires 0 <= position.getColumn();
 	public /*@ non_null */ Piece getPiece(Position position) {
 		if (!positionExists(position)) {
 			throw new BoardException("Erro to get the piece: The position: "+ position + " don't exists");
 		}
+		
 		return pieces[position.getRow()][position.getColumn()];
 	}
 	
@@ -100,14 +101,14 @@ public class Board {
 		return aux;
 	}
 	
-	//@ requires _rows > position.getRow() >= 0;
-	//@ requires _cols > position.getColumn() >= 0;
-	//@ ensures \result == true;
-	//@ also
-	//@ requires position.getRow() >= _rows || position.getRow() < 0;
-	//@ requires position.getColumn() >= _cols || position.getColumn() < 0;
-	//@ ensures \result == false;
-	public /*@ non_null */ boolean positionExists(Position position) {
+	// requires 0 <= position.getRow() < _rows;
+	// requires 0 <= position.getColumn() < _cols;
+	// ensures \result == true;
+	// also
+	// requires position.getRow() >= _rows || position.getRow() < 0;
+	// requires position.getColumn() >= _cols || position.getColumn() < 0;
+	// ensures \result == false;
+	public boolean positionExists(Position position) {
 		return position.getRow() >= 0 && position.getRow() < rows 
 				&& position.getColumn() >= 0 && position.getColumn() < cols;
 	}

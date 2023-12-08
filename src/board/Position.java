@@ -5,6 +5,9 @@ public class Position {
 	private Integer row;
 	private Integer col;
 	
+	// public invariant 0 < row < Integer.MAX_VALUE;
+	// public invariant 0 < col < Integer.MAX_VALUE;
+	
 	//@ pure
 	public Position (int row, int col) {
 		this.row = row;
@@ -16,6 +19,7 @@ public class Position {
 		return row;
 	}
 
+	//@ requires row >= 0;
 	public void setRow(Integer row) {
 		this.row = row;
 	}
@@ -25,10 +29,13 @@ public class Position {
 		return col;
 	}
 
+	//@ requires col >= 0;
 	public void setColumn(Integer col) {
 		this.col = col;
 	}
 	
+	//@ requires row >= 0;
+	//@ requires col >= 0;
 	public void setPositions(int row, int col) {
 		this.row = row;
 		this.col = col;

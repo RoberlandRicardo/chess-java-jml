@@ -17,14 +17,14 @@ public class King extends Piece{
 		
 	}
 	
-	//@ ensures /result == "K";
-	//@ pure;
+	//@ also
+	//@ ensures \result == "K";
 	@Override
 	public  /*@ non_null */ String toString() {
 		return "K";
 	}
 	
-	private boolean testRookCanRoque(Position position) {
+	private boolean testRookCanRoque(/*@ non_null */ Position position) {
 		Piece p = getBoard().getPiece(position);
 		return p != null && p instanceof Rook && p.getColor() == getColor() && p.getMoveCount() == 0;
 	}

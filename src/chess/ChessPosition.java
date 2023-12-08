@@ -3,7 +3,9 @@ package chess;
 import board.Position;
 
 public class ChessPosition {
+	//@ spec_public
 	private char col;
+	//@ spec_public
 	private int row;
 	
 	//@ requires col < 'a' || col > 'h' || row < 1 || row > 8;
@@ -21,7 +23,7 @@ public class ChessPosition {
 		this.row = row;
 	}
 
-	//@ ensure /result == this.col;
+	//@ ensures \result == this.col;
 	public char getCol() {
 		return col;
 	}
@@ -30,7 +32,7 @@ public class ChessPosition {
 		this.col = col;
 	}
 
-	//@ ensure /result == this.row;
+	//@ ensures \result == this.row;
 	public int getRow() {
 		return row;
 	}
@@ -47,6 +49,7 @@ public class ChessPosition {
 		return new ChessPosition (8 - position.getRow(), (char) ('a' + position.getColumn()));
 	}
 	
+	//@ pure
 	@Override
 	public String toString() {
 		return "" + col + row;
