@@ -13,37 +13,52 @@ import chess.piece.*;
 
 public class ChessMatch {
 
+	//@ spec_public
 	private int turn;
-	private Color currentPlayer;
-	private Board board;
+	//@ spec_public
+	private /* non_null */ Color currentPlayer;
+	//@ spec_public
+	private /* non_null */ Board board;
+	//@ spec_public
 	private boolean check;
+	//@ spec_public
 	private boolean checkMate;
+	//@ spec_public
 	private Piece promoted;
+	//@ spec_public
 	private Piece enPassantVunerable;
 	
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
 	private List<Piece> capturedPieces = new ArrayList<>();
 	
+	// public invariant 1 <= turn;
+	
+	//@ ensures \result == this.turn;
 	public int getTurn() {
 		return turn;
 	}
 	
+	//@ ensures \result == this.currentPlayer;
 	public Color getCurrentPlayer() {
 		return currentPlayer;
 	}
 	
+	//@ ensures \result == this.check;
 	public boolean getCheck() {
 		return check;
 	}
 	
+	//@ ensures \result == this.checkMate;
 	public boolean getCheckMate() {
 		return checkMate;
 	}
 	
+	//@ ensures \result == this.promoted;
 	public Piece getPromoted() {
 		return promoted;
 	}
 	
+	//@ ensures \result == this.enPassantVunerable;
 	public Piece getEnPassantVunerable() {
 		return enPassantVunerable;
 	}
@@ -52,6 +67,10 @@ public class ChessMatch {
 		return board.getPieces();
 	}
 	
+	//@ ensures board != null;
+	//@ ensures this.turn == 1;
+	//@ ensures this.currentPlayer == Color.WHITE;
+	//@ pure
 	public ChessMatch() {
 		board = new Board(8,8);
 		turn = 1;
@@ -59,7 +78,21 @@ public class ChessMatch {
 		initialSetup();
 	}
 
-	public boolean[][] possibleMoves(ChessPosition sourcePosition){
+	//@ requires sourcePosition.toPosition() == null;
+	//@ ensures false;
+	//@ also
+	//@ requires sourcePosition.toPosition() != null;
+	//@ requires !board.positionExists(sourcePosition.toPosition()) || !board.haveAPiece(sourcePosition.toPosition()) || currentPlayer != board.getPiece(sourcePosition.toPosition()).getColor() || !board.getPiece(sourcePosition.toPosition()).havePossibleMove();
+	//@ signals_only ChessException;
+	//@ ensures false;
+	//@ also
+	//@ requires sourcePosition.toPosition() != null;
+	//@ requires board.positionExists(sourcePosition.toPosition());
+	//@ requires board.haveAPiece(sourcePosition.toPosition());
+	//@ requires currentPlayer == board.getPiece(sourcePosition.toPosition()).getColor();
+	//@ requires board.getPiece(sourcePosition.toPosition()).havePossibleMove();
+	//@ ensures true;
+	public boolean[][] possibleMoves(/* non_null */ ChessPosition sourcePosition){
 		Position source = sourcePosition.toPosition();
 		if (!board.positionExists(source)) {
 			throw new ChessException("Error in the source position: This position are invalid");

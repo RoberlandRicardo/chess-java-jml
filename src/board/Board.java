@@ -67,6 +67,7 @@ public class Board {
 	
 	//@ requires 0 <= position.getRow();
 	//@ requires 0 <= position.getColumn();
+	//@ pure
 	public /*@ non_null */ Piece getPiece(Position position) {
 		if (!positionExists(position)) {
 			throw new BoardException("Erro to get the piece: The position: "+ position + " don't exists");
@@ -105,13 +106,14 @@ public class Board {
 		return aux;
 	}
 	
-	// requires 0 <= position.getRow() < _rows;
-	// requires 0 <= position.getColumn() < _cols;
-	// ensures \result == true;
-	// also
-	// requires position.getRow() >= _rows || position.getRow() < 0;
-	// requires position.getColumn() >= _cols || position.getColumn() < 0;
-	// ensures \result == false;
+	//@ requires 0 <= position.getRow() < _rows;
+	//@ requires 0 <= position.getColumn() < _cols;
+	//@ ensures \result == true;
+	//@ also
+	//@ requires position.getRow() >= _rows || position.getRow() < 0;
+	//@ requires position.getColumn() >= _cols || position.getColumn() < 0;
+	//@ ensures \result == false; 
+	//@ pure
 	public boolean positionExists(Position position) {
 		return position.getRow() >= 0 && position.getRow() < rows 
 				&& position.getColumn() >= 0 && position.getColumn() < cols;

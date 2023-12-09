@@ -23,6 +23,7 @@ public abstract class Piece {
 		return board;
 	}
 	
+	//@ pure
 	public Color getColor() {
 		return color;
 	}
@@ -49,6 +50,7 @@ public abstract class Piece {
 		return possibleMoves()[position.getRow()][position.getColumn()];
 	}
 	
+	//@ pure
 	public boolean havePossibleMove() {
 		boolean[][] aux = possibleMoves();
 		for (int i = 0; i < aux.length; i++) {
