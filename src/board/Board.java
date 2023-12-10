@@ -27,14 +27,14 @@ public class Board {
 		this.cols = cols;
 		pieces = new Piece[rows][cols];
 	}
-
-	//@ ensures \result == rows;
+	
+	//@ ensures \result == _rows;
 	//@ pure
 	public int getRows() {
 		return rows;
 	}
-
-	//@ ensures \result == cols;
+	
+	//@ ensures \result == _cols;
 	//@ pure
 	public int getCols() {
 		return cols;
@@ -46,25 +46,24 @@ public class Board {
 		return pieces;
 	}
 
-	//@ requires 0 <= row < Integer.MAX_VALUE;
-	//@ requires 0 <= col < Integer.MAX_VALUE;
-	//@ requires 0 <= row < rows;	
-	//@ requires 0 <= col < cols;
-	//@ assignable \nothing;
-	//@ ensures \result == pieces[row][col];
-	public /*@ nullable */ Piece getPiece(int row, int col) {
+	//@ requires 0 <= col <= 7;
+	//@ requires 0 <= row <= 7;
+	//@ requires _pieces.length >= 1;
+	//@ requires _pieces[0].length >= 1;
+	//@ requires row < _pieces.length;
+	//@ requires col < _pieces[0].length;
+	//@ ensures \result == _pieces[row][col];
+	//@ pure
+	public /*@ non_null */ Piece getPiece(int row, int col) {
 		if (!positionExists(new Position(row, col))) {
 			throw new BoardException("Erro to get the piece: The position don't exists");
 		}
 		return pieces[row][col];
 	}
-
-	//@ requires 0 <= position.getRow() < Integer.MAX_VALUE;
-	//@ requires 0 <= position.getColumn() < Integer.MAX_VALUE;
-	//@ requires 0 <= position.getRow() < rows;
-	//@ requires 0 <= position.getColumn() < cols;
-	//@ assignable \nothing;
-	//@ ensures \result != null;
+	
+	//@ requires 0 <= position.getRow();
+	//@ requires 0 <= position.getColumn();
+	//@ pure
 	public /*@ non_null */ Piece getPiece(Position position) {
 		if (!positionExists(position)) {
 			throw new BoardException("Erro to get the piece: The position: " + position + " don't exists");
