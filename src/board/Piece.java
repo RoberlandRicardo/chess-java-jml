@@ -28,6 +28,7 @@ public abstract class Piece {
 		return color;
 	}
 	
+	//@ pure
 	public int getMoveCount() {
 		return moveCount;
 	}
@@ -40,6 +41,7 @@ public abstract class Piece {
 		this.moveCount--;
 	}
 	
+	//@ pure
 	public ChessPosition getChessPosition() {
 		return ChessPosition.fromPosition(position);
 	}

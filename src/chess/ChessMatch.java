@@ -109,6 +109,7 @@ public class ChessMatch {
 		return board.getPiece(source).possibleMoves();
 	}
 	
+	
 	public Piece chessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
 		Position source = sourcePosition.toPosition();
 		Position target = targetPosition.toPosition();
@@ -152,7 +153,19 @@ public class ChessMatch {
 		return capturedPiece;
 	}
 	
-	public Piece replacePromotedPiece(String type) {
+	//@ requires promoted == null;
+	//@ signals_only IllegalStateException;
+	//@ ensures false;
+	//@ also
+	//@ requires !type.equals("B") && !type.equals("N") && !type.equals("R") && !type.equals("Q");
+	//@ signals_only InvalidParameterException;
+	//@ ensures false;
+	//@ also
+	//@ requires type.equals("P");
+	//@ requires promoted != null;
+	//@ ensures !(\result instanceof Pawn);
+	//@ ensures \result == board.getPiece(promoted.getChessPosition().toPosition());
+	public Piece replacePromotedPiece(/* non_null */ String type) {
 		if (promoted == null) {
 			throw new IllegalStateException("No have to be promoted");
 		}
@@ -171,13 +184,35 @@ public class ChessMatch {
 		return newPiece;
 	}
 	
+	//@ requires type.equals("B");
+	//@ ensures \result instanceof Bishop;
+	//@ ensures \result.getColor() == color;
+	//@ also
+	//@ requires type.equals("N");
+	//@ ensures \result instanceof Knight;
+	//@ ensures \result.getColor() == color;
+	//@ also
+	//@ requires type.equals("Q");
+	//@ ensures \result instanceof Queen;
+	//@ ensures \result.getColor() == color;
+	//@ also
+	//@ requires type.equals("R");
+	//@ ensures \result instanceof Rook;
+	//@ ensures \result.getColor() == color;
 	private Piece newPiece(String type, Color color) {
 		if (type.equals("B")) return new Bishop(board, color);  
 		if (type.equals("N")) return new Knight(board, color);  
 		if (type.equals("Q")) return new Queen(board, color);  
 		return new Rook(board, color);  
 	}
-	
+
+	//@ requires board.haveAPiece(source);
+	//@ ensures board.getPiece(source).getMoveCount() == 1 + \old(board.getPiece(source).getMoveCount());
+	//@ also
+	//@ requires board.haveAPiece(source);
+	//@ requires board.haveAPiece(target);
+	//@ ensures board.getPiece(source).getMoveCount() == 1 + \old(board.getPiece(source).getMoveCount());
+	//@ ensures capturedPieces.get(capturedPieces.size()).equals(target);
 	private Piece makeMove(Position source, Position target) {
 		Piece p = board.removePiece(source);
 		p.increaseMoveCount();
@@ -226,6 +261,7 @@ public class ChessMatch {
 		return capturedPiece;
 	}
 	
+	
 	private void undoMove(Position source, Position target, Piece capturedPiece) {
 		Piece p = board.removePiece(target);
 		p.decreaseMoveCount();
@@ -271,9 +307,14 @@ public class ChessMatch {
 		}
 	}
 	
+	//@ ensures searchKing(color) != null;
+	//@ pure
 	private boolean testCheck(Color color) {
 		Position kingPosition = searchKing(color).getChessPosition().toPosition();
 		List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> x.getColor() == getOpponent(color)).collect(Collectors.toList());
+		//@ maintaining 0 <= \count <= opponentPieces.size();
+		//@ loop_writes \nothing;
+		//@ decreases opponentPieces.size() - \count;
 		for (Piece p : opponentPieces) {
 			boolean[][] pos = p.possibleMoves();
 			if (pos[kingPosition.getRow()][kingPosition.getColumn()]) {
@@ -283,6 +324,10 @@ public class ChessMatch {
 		return false;
 	}
 	
+	//@ requires !testCheck(color);
+	//@ ensures \result == false;
+	//@ also
+	//@ requires testCheck(color);
 	private boolean testCheckMate(Color color) {
 		if (!testCheck(color)) {
 			return false;
@@ -290,7 +335,12 @@ public class ChessMatch {
 		List<Piece> list = piecesOnTheBoard.stream().filter(x -> x.getColor() == color).collect(Collectors.toList());
 		for (Piece p : list) {
 			boolean[][] mat = p.possibleMoves();
+			
+			//@ maintaining 0 <= i <= board.getRows();
+			//@ decreases board.getRows() - i;
 			for (int i = 0; i < board.getRows(); i++) {
+				//@ maintaining 0 <= j <= board.getCols();
+				//@ decreases board.getCols() - j;
 				for (int j = 0; j < board.getCols(); j++) {
 					if (mat[i][j]) {
 						Position source = p.getChessPosition().toPosition();
@@ -308,17 +358,35 @@ public class ChessMatch {
 		return true;
 	}
 	
+	//@ requires currentPlayer == Color.WHITE;
+	//@ ensures turn == \old(turn) + 1;
+	//@ ensures currentPlayer == Color.BLACK;
+	//@ also
+	//@ requires currentPlayer == Color.BLACK;
+	//@ ensures turn == \old(turn) + 1;
+	//@ ensures currentPlayer == Color.WHITE;
 	private void nextTurn() {
 		turn++;
 		currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;
 	}
 	
+	//@ requires color == Color.WHITE;
+	//@ ensures \result == Color.BLACK;
+	//@ also
+	//@ requires color == Color.BLACK;
+	//@ ensures \result == Color.WHITE;	
 	private Color getOpponent(Color color) {
 		return (color == color.WHITE) ? Color.BLACK : Color.WHITE;
 	}
 	
+	//@ ensures \result instanceof King;
+	//@ pure
 	private Piece searchKing(Color color) {
 		List<Piece> list = piecesOnTheBoard.stream().filter(x -> x.getColor() == color).collect(Collectors.toList());
+		//@ maintaining 0 <= \count <= list.size();
+		//@ maintaining \forall int k; 0 <= k < \count; !(list.get(k) instanceof King);
+		//@ loop_writes \nothing;
+		//@ decreases list.size() - \count;
 		for (Piece p : list) {
 			if (p instanceof King) {
 				return p;
@@ -327,7 +395,11 @@ public class ChessMatch {
 		throw new IllegalStateException("There is no " + color + " king on the board");
 	}
 	
-	private void placeNewPiece(char col, int row, Piece piece) {
+	//@ requires 0 <= col <= 7;
+	//@ requires 0 <= col <= 7;
+	//@ ensures board.getPiece(row, col) != null;
+	//@ ensures piecesOnTheBoard.size() > 0;
+	private void placeNewPiece(char col, int row, /* non_null */ Piece piece) {
 		board.placePiece(piece, new ChessPosition(row, col).toPosition());
 		piecesOnTheBoard.add(piece);
 	}

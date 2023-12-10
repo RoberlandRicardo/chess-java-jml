@@ -36,11 +36,13 @@ public class Board {
 	}
 	
 	//@ ensures \result == _rows;
+	//@ pure
 	public int getRows() {
 		return rows;
 	}
 	
 	//@ ensures \result == _cols;
+	//@ pure
 	public int getCols() {
 		return cols;
 	}
@@ -57,6 +59,7 @@ public class Board {
 	//@ requires row < _pieces.length;
 	//@ requires col < _pieces[0].length;
 	//@ ensures \result == _pieces[row][col];
+	//@ pure
 	public /*@ non_null */ Piece getPiece(int row, int col) {
 		if (!positionExists(new Position(row, col))) {
 			throw new BoardException("Erro to get the piece: The position don't exists");
