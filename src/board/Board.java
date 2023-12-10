@@ -2,31 +2,24 @@ package board;
 
 public class Board {
 
-	private /*@ non_null */ int rows; //@ in _rows;
-	private /*@ non_null */ int cols; //@ in _cols;
-	private /*@ non_null */ Piece[][] pieces; //@ in _pieces;
-	
-	//@ public model int _rows;
-    //@ private represents _rows = rows;
-	//@ public model int _cols;
-    //@ private represents _cols = cols;
-	//@ public model Piece[][] _pieces;
-    //@ private represents _pieces = pieces;
-	
-	// public invariant 0 < _rows < Integer.MAX_VALUE;
-	// public invariant 0 < _cols < Integer.MAX_VALUE;
-	
-	//@ requires rows < 1 || cols < 1;
-	//@ signals_only RuntimeException;
-	//@ ensures false;
-	//@ also
-	//@ requires rows >= 1 && cols >= 1;
-	//@ requires rows < Integer.MAX_VALUE && cols < Integer.MAX_VALUE;
-	//@ ensures _rows == rows;
-	//@ ensures _cols == cols;
-	//@ signals_only \nothing;
-	//@ ensures true;
-	public Board (int rows, int cols) {
+	//@ spec_public
+	private int rows;
+	//@ spec_public
+	private int cols;
+	//@ spec_public
+	private /*@ nullable */ Piece /*@ non_null */[][] pieces;
+
+	//@ public normal_behavior
+	//@ 	requires rows < 1 || cols < 1;
+	//@ 	signals_only BoardException;
+	//@ 	ensures false;
+	//@ 	requires 0 < rows < Integer.MAX_VALUE;
+	//@ 	requires 0 < cols < Integer.MAX_VALUE;
+	//@ 	ensures pieces.length == rows;
+	//@ 	ensures this.rows == rows;
+	//@ 	ensures this.cols == cols;
+	//@ pure
+	public Board(int rows, int cols) {
 		if (rows < 1 || cols < 1) {
 			throw new BoardException("Error creating board: there must be at least 1 row and 1 column");
 		}
@@ -34,67 +27,73 @@ public class Board {
 		this.cols = cols;
 		pieces = new Piece[rows][cols];
 	}
-	
-	//@ ensures \result == _rows;
+
+	//@ ensures \result == rows;
+	//@ pure
 	public int getRows() {
 		return rows;
 	}
-	
-	//@ ensures \result == _cols;
+
+	//@ ensures \result == cols;
+	//@ pure
 	public int getCols() {
 		return cols;
 	}
-	
-	//@ ensures \result == _pieces;
-	public Piece[][] getPieces(){
+
+	//@ ensures \result == pieces;
+	//@ pure
+	public Piece[][] getPieces() {
 		return pieces;
 	}
 
-	//@ requires 0 <= col <= 7;
-	//@ requires 0 <= row <= 7;
-	//@ requires _pieces.length >= 1;
-	//@ requires _pieces[0].length >= 1;
-	//@ requires row < _pieces.length;
-	//@ requires col < _pieces[0].length;
-	//@ ensures \result == _pieces[row][col];
-	public /*@ non_null */ Piece getPiece(int row, int col) {
+	//@ requires 0 <= row < Integer.MAX_VALUE;
+	//@ requires 0 <= col < Integer.MAX_VALUE;
+	//@ requires 0 <= row < rows;	
+	//@ requires 0 <= col < cols;
+	//@ assignable \nothing;
+	//@ ensures \result == pieces[row][col];
+	public /*@ nullable */ Piece getPiece(int row, int col) {
 		if (!positionExists(new Position(row, col))) {
 			throw new BoardException("Erro to get the piece: The position don't exists");
 		}
-		//@ show row, col, _pieces.length, _pieces[0].length;
 		return pieces[row][col];
 	}
-	
-	//@ requires 0 <= position.getRow();
-	//@ requires 0 <= position.getColumn();
+
+	//@ requires 0 <= position.getRow() < Integer.MAX_VALUE;
+	//@ requires 0 <= position.getColumn() < Integer.MAX_VALUE;
+	//@ requires 0 <= position.getRow() < rows;
+	//@ requires 0 <= position.getColumn() < cols;
+	//@ assignable \nothing;
+	//@ ensures \result != null;
 	public /*@ non_null */ Piece getPiece(Position position) {
 		if (!positionExists(position)) {
-			throw new BoardException("Erro to get the piece: The position: "+ position + " don't exists");
+			throw new BoardException("Erro to get the piece: The position: " + position + " don't exists");
 		}
-		
+
 		return pieces[position.getRow()][position.getColumn()];
 	}
-	
+
 	public void placePiece(Piece piece, Position position) {
 		if (!positionExists(position)) {
-			throw new BoardException("Erro to place the piece: The position: "+ position + " don't exists");
+			throw new BoardException("Erro to place the piece: The position: " + position + " don't exists");
 		} else if (haveAPiece(position)) {
-			throw new BoardException("Erro to place the piece: The position: "+ position + " already have a piece");
+			throw new BoardException("Erro to place the piece: The position: " + position + " already have a piece");
 		}
 		pieces[position.getRow()][position.getColumn()] = piece;
 		piece.position = position;
 	}
-	
-	//@ requires 0 <= position.getRow() < _rows;
-	//@ requires 0 <= position.getColumn() < _cols;
+
+	//@ requires 0 <= position.getRow() < rows;
+	//@ requires 0 <= position.getColumn() < cols;
 	//@ requires haveAPiece(position);
-	//@ ensures _pieces[position.getRow()][position.getColumn()] == null;
+	//@ ensures pieces[position.getRow()][position.getColumn()] == null;
 	//@ ensures \result instanceof Piece;
+	//@ ensures \result.getPosition() == null;
 	//@ ensures \result != null;
 	//@ ensures true;
-	public Piece removePiece(Position position) {
+	public /*@ non_null */  Piece removePiece(Position position) {
 		if (!positionExists(position)) {
-			throw new BoardException("Erro to place the piece: The position: "+ position + " don't exists");
+			throw new BoardException("Erro to place the piece: The position: " + position + " don't exists");
 		}
 		if (!haveAPiece(position)) {
 			return null;
@@ -103,20 +102,19 @@ public class Board {
 		aux.position = null;
 		pieces[position.getRow()][position.getColumn()] = null;
 		return aux;
+
+		//@ assert aux.position == null;
 	}
-	
-	// requires 0 <= position.getRow() < _rows;
-	// requires 0 <= position.getColumn() < _cols;
-	// ensures \result == true;
-	// also
-	// requires position.getRow() >= _rows || position.getRow() < 0;
-	// requires position.getColumn() >= _cols || position.getColumn() < 0;
-	// ensures \result == false;
+
+	//@ requires 0 <= position.getRow();
+	//@ requires 0 <= position.getColumn();
+	//@ requires position.getColumn() < cols;
+	//@ ensures \result == true;
 	public boolean positionExists(Position position) {
-		return position.getRow() >= 0 && position.getRow() < rows 
+		return position.getRow() >= 0 && position.getRow() < rows
 				&& position.getColumn() >= 0 && position.getColumn() < cols;
 	}
-	
+
 	//@ requires position != null;
 	//@ ensures \result == true;
 	//@ also

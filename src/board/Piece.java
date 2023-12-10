@@ -4,51 +4,74 @@ import chess.ChessPosition;
 import chess.Color;
 
 public abstract class Piece {
+	//@ spec_public
 	protected Position position;
+	//@ spec_public
 	private Board board;
+	//@ spec_public
 	private Color color;
+	//@ spec_public
 	private int moveCount;
 	
-	// @ ensures this.board == board;
-	// @ ensures this.color == color;
-	// @ ensures this.position == null;
-	// @ pure
+	//@ public normal_behavior
+	//@ 	ensures this.board == board;
+	//@ 	ensures this.color == color;
+	//@ 	ensures this.position == null;
+	//@ pure
 	public Piece(/*@ non_null */ Board board,/*@ non_null */ Color color) {
 		this.board = board;
 		this.color = color;
 		position = null;
+
+		//@ assert position == null;
 	}
 	
+	//@ ensures \result == board;
+	//@ pure
 	public Board getBoard() {
 		return board;
 	}
 	
+	//@ ensures \result == color;
+	//@ pure
 	public Color getColor() {
 		return color;
 	}
 	
+	//@ ensures \result == moveCount;
+	//@ pure
 	public int getMoveCount() {
 		return moveCount;
 	}
 	
+	//@ requires this.moveCount < Integer.MAX_VALUE;
+	//@ ensures this.moveCount == \old(this.moveCount) + 1;
 	public void increaseMoveCount() {
 		this.moveCount++;
 	}
 	
+	//@ requires this.moveCount > 0;
+	//@ ensures this.moveCount == \old(this.moveCount) - 1;
 	public void decreaseMoveCount() {
 		this.moveCount--;
 	}
 	
+	//@ ensures \result == ChessPosition.fromPosition(Position);
 	public ChessPosition getChessPosition() {
 		return ChessPosition.fromPosition(position);
 	}
 	
 	public abstract boolean[][] possibleMoves();
 	
+	//@ ensures \result == possibleMoves()[position.getRow()][position.getColumn()];
 	public boolean possibleMove(Position position) {
 		return possibleMoves()[position.getRow()][position.getColumn()];
 	}
 	
+	//@ requires aux != null;
+	//@ requires 0 <= i < aux.length;
+	//@ requires 0 <= j < aux[0].length;
+	//@ ensures true;
 	public boolean havePossibleMove() {
 		boolean[][] aux = possibleMoves();
 		for (int i = 0; i < aux.length; i++) {
@@ -58,9 +81,15 @@ public abstract class Piece {
 		}
 		return false;
 	}
-	
+	//@ requires position != null;
 	protected boolean isOpponentPiece(Position position) {
 		Piece p = board.getPiece(position);
 		return p != null && p.getColor() != color; 
+	}
+
+	//@ ensures \result == position;
+    //@ pure
+	public Position getPosition() {
+		return position;
 	}
 }
