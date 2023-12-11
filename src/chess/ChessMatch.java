@@ -92,7 +92,7 @@ public class ChessMatch {
 	//@ requires currentPlayer == board.getPiece(sourcePosition.toPosition()).getColor();
 	//@ requires board.getPiece(sourcePosition.toPosition()).havePossibleMove();
 	//@ ensures true;
-	public boolean[][] possibleMoves(/* non_null */ ChessPosition sourcePosition){
+	public boolean[][] possibleMoves(/*@ non_null */ ChessPosition sourcePosition){
 		Position source = sourcePosition.toPosition();
 		if (!board.positionExists(source)) {
 			throw new ChessException("Error in the source position: This position are invalid");
@@ -421,7 +421,7 @@ public class ChessMatch {
 	//@ assignable board, piecesOnTheBoard;
 	//@ ensures board.getPiece(row, col) != null;
 	//@ ensures piecesOnTheBoard.size() > 0;
-	private void placeNewPiece(char col, int row, /* non_null */ Piece piece) {
+	private void placeNewPiece(char col, int row, /*@ non_null */ Piece piece) {
 		board.placePiece(piece, new ChessPosition(row, col).toPosition());
 		piecesOnTheBoard.add(piece);
 	}
