@@ -9,6 +9,7 @@ public class Board {
 	//@ spec_public
 	private /*@ nullable */ Piece /*@ non_null */[][] pieces;
 
+	//@ public normal_behavior
 	//@ 	requires rows < 1 || cols < 1;
 	//@ 	signals_only BoardException;
 	//@ 	ensures false;
