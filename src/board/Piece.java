@@ -56,22 +56,24 @@ public abstract class Piece {
 		this.moveCount--;
 	}
 	
-	//@ ensures \result == ChessPosition.fromPosition(Position);
+	//@ ensures \result == ChessPosition.fromPosition(position);
+	//@ pure
 	public ChessPosition getChessPosition() {
 		return ChessPosition.fromPosition(position);
 	}
 	
+	//@ pure
 	public abstract boolean[][] possibleMoves();
 	
 	//@ ensures \result == possibleMoves()[position.getRow()][position.getColumn()];
+	//@ pure
 	public boolean possibleMove(Position position) {
 		return possibleMoves()[position.getRow()][position.getColumn()];
 	}
 	
-	//@ requires aux != null;
-	//@ requires 0 <= i < aux.length;
-	//@ requires 0 <= j < aux[0].length;
+	//@ requires possibleMoves() != null;
 	//@ ensures true;
+	//@ pure
 	public boolean havePossibleMove() {
 		boolean[][] aux = possibleMoves();
 		for (int i = 0; i < aux.length; i++) {

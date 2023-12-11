@@ -33,6 +33,7 @@ public class ChessPosition {
 	}
 
 	//@ ensures this.col == col;
+	//@ assignable this.col;
 	public void setCol(char col) {
 		this.col = col;
 	}
@@ -43,6 +44,7 @@ public class ChessPosition {
 	}
 
 	//@ ensures this.row == row;
+	//@ assignable this.row;
 	public void setRow(int row) {
 		this.row = row;
 	}
@@ -57,6 +59,7 @@ public class ChessPosition {
 	//@ requires 7 >= position.getColumn() >= 0;
 	//@ requires position.getRow() instanceof Integer;
 	//@ requires 7 >= position.getRow() >= 0;
+	//@ pure
 	public static ChessPosition fromPosition(Position position) {
 		return new ChessPosition (8 - position.getRow(), (char) ('a' + position.getColumn()));
 	}

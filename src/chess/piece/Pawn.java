@@ -8,14 +8,22 @@ import chess.Color;
 
 public class Pawn extends Piece{
 
-	private ChessMatch chessMatch;
+	//@ spec_public
+	private /*@ non_null */ ChessMatch chessMatch;
 	
+	//@ public invariant 1 <= getPosition().getColumn() <= 6;
+	//@ public invariant 1 <= getPosition().getRow() <= 6;
+	
+	//@ public normal_behavior
+	//@ 	ensures this.chessMatch == chessMatch;
 	//@ pure
 	public Pawn(Board board, Color color, ChessMatch chessMatch) {
 		super(board, color);
 		this.chessMatch = chessMatch;
 	}
 
+	//@ also
+	//@ ensures \result == "K";
 	@Override
 	public  /*@ non_null */ String toString() {
 		return "P";

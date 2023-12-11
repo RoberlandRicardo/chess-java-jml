@@ -68,6 +68,9 @@ public class Rook extends Piece {
 		
 		// Oeste
 		p.setRow(position.getRow());
+		//@ maintaining position.getColumn() + 1 <= i <= getBoard().getCols();
+		//@ loop_assigns aux[*][*];
+		//@ decreases getBoard().getCols() - i;
 		for (int i = position.getColumn() + 1; i < getBoard().getCols(); i++) {
 			p.setColumn(i);
 			if (getBoard().haveAPiece(p)) {

@@ -9,7 +9,6 @@ public class Board {
 	//@ spec_public
 	private /*@ nullable */ Piece /*@ non_null */[][] pieces;
 
-	//@ public normal_behavior
 	//@ 	requires rows < 1 || cols < 1;
 	//@ 	signals_only BoardException;
 	//@ 	ensures false;
@@ -28,13 +27,13 @@ public class Board {
 		pieces = new Piece[rows][cols];
 	}
 	
-	//@ ensures \result == _rows;
+	//@ ensures \result == rows;
 	//@ pure
 	public int getRows() {
 		return rows;
 	}
 	
-	//@ ensures \result == _cols;
+	//@ ensures \result == cols;
 	//@ pure
 	public int getCols() {
 		return cols;
@@ -48,11 +47,11 @@ public class Board {
 
 	//@ requires 0 <= col <= 7;
 	//@ requires 0 <= row <= 7;
-	//@ requires _pieces.length >= 1;
-	//@ requires _pieces[0].length >= 1;
-	//@ requires row < _pieces.length;
-	//@ requires col < _pieces[0].length;
-	//@ ensures \result == _pieces[row][col];
+	//@ requires pieces.length >= 1;
+	//@ requires pieces[0].length >= 1;
+	//@ requires row < pieces.length;
+	//@ requires col < pieces[0].length;
+	//@ ensures \result == pieces[row][col];
 	//@ pure
 	public /*@ non_null */ Piece getPiece(int row, int col) {
 		if (!positionExists(new Position(row, col))) {
@@ -101,14 +100,13 @@ public class Board {
 		aux.position = null;
 		pieces[position.getRow()][position.getColumn()] = null;
 		return aux;
-
-		//@ assert aux.position == null;
 	}
 
 	//@ requires 0 <= position.getRow();
 	//@ requires 0 <= position.getColumn();
 	//@ requires position.getColumn() < cols;
 	//@ ensures \result == true;
+	//@ pure
 	public boolean positionExists(Position position) {
 		return position.getRow() >= 0 && position.getRow() < rows
 				&& position.getColumn() >= 0 && position.getColumn() < cols;

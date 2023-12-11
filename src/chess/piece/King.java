@@ -8,8 +8,8 @@ import chess.Color;
 
 public class King extends Piece{
 	
-	private ChessMatch match;
-
+	private /*@ non_null */ ChessMatch match;
+	
 	//@ pure
 	public King(Board board, Color color, ChessMatch match) {
 		super(board, color);
@@ -24,6 +24,15 @@ public class King extends Piece{
 		return "K";
 	}
 	
+	
+	//@ requires !(getBoard().getPiece(position) instanceof Rook);
+	//@ ensures \result == false;
+	//@ also
+	//@ requires !(getBoard().getPiece(position).getColor() == getColor());
+	//@ ensures \result == false;
+	//@ also
+	//@ requires !(getBoard().getPiece(position).getMoveCount() == 0);
+	//@ ensures \result == false;
 	private boolean testRookCanRoque(/*@ non_null */ Position position) {
 		Piece p = getBoard().getPiece(position);
 		return p != null && p instanceof Rook && p.getColor() == getColor() && p.getMoveCount() == 0;
@@ -32,9 +41,20 @@ public class King extends Piece{
 	@Override
 	public boolean[][] possibleMoves(){
 		boolean[][] aux = new boolean[super.getBoard().getRows()][super.getBoard().getCols()];
-		
+		//@ maintaining 0 <= position.getRow() - 1 <= i <= position.getRow() + 1 <= 7;
+		//@ maintaining \count <= 3;
+		//@ maintaining (\forall int k;  
+		//@						position.getRow() - 1 <= k <= position.getRow() + 1;
+		//@						(\forall int j;
+		//@						position.getColumn() - 1 <= j <= position.getColumn() + 1;
+		//@						((getBoard().getPiece(k,j) == null || getBoard().getPiece(k,j).getColor() != getColor())  
+		//@						==> aux[k][j] == true)));
+		//@ decreases 3 - i;
 		for (int i = position.getRow() - 1; i <= position.getRow() + 1; i++) {
-			
+			//@ maintaining 0 <= position.getColumn() - 1 <= j <= position.getColumn() + 1 <= 7;
+			//@ maintaining \count <= 3;
+			//@ loop_assigns aux[*][*];
+			//@ decreases 3 - j;
 			for (int j = position.getColumn() - 1; j <= position.getColumn() + 1; j++) {
 				if (!(i < 0 || i >= getBoard().getRows() || j < 0 || j >= getBoard().getCols())) {
 					if (getBoard().getPiece(i,j) == null){

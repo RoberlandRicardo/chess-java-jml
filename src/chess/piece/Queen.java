@@ -7,14 +7,17 @@ import chess.Color;
 
 public class Queen extends Piece{
 	
+	//@ public normal_behavior
 	//@ pure
 	public Queen(Board board, Color color) {
 		super(board, color);
 		
 	}
 	
+	//@ also
+	//@ ensures \result == "Q";
 	@Override
-	public String toString() {
+	public /*@ non_null */ String toString() {
 		return "Q";
 	}
 	
@@ -26,6 +29,9 @@ public class Queen extends Piece{
 		
 		// Norte
 		p.setColumn(position.getColumn());
+		//@ maintaining 0 <= i <= position.getRow();
+		//@ loop_assigns aux[*][*];
+		//@ decreases i;
 		for (int i = position.getRow() - 1; i >= 0; i--) {
 			p.setRow(i);
 			if (getBoard().haveAPiece(p)) {
@@ -40,6 +46,9 @@ public class Queen extends Piece{
 		
 		// Leste
 		p.setRow(position.getRow());
+		//@ maintaining 0 <= i <= position.getColumn();
+		//@ loop_assigns aux[*][*];
+		//@ decreases i;
 		for (int i = position.getColumn() - 1; i >= 0; i--) {
 			p.setColumn(i);
 			if (getBoard().haveAPiece(p)) {
@@ -54,6 +63,9 @@ public class Queen extends Piece{
 		
 		// Sul
 		p.setColumn(position.getColumn());
+		//@ maintaining position.getRow() + 1 <= i <= getBoard().getRows();
+		//@ loop_assigns aux[*][*];
+		//@ decreases getBoard().getRows() - i;
 		for (int i = position.getRow() + 1; i < getBoard().getRows(); i++) {
 			p.setRow(i);
 			if (getBoard().haveAPiece(p)) {
@@ -68,6 +80,9 @@ public class Queen extends Piece{
 		
 		// Oeste
 		p.setRow(position.getRow());
+		//@ maintaining position.getColumn() + 1 <= i <= getBoard().getCols();
+		//@ loop_assigns aux[*][*];
+		//@ decreases getBoard().getCols() - i;
 		for (int i = position.getColumn() + 1; i < getBoard().getCols(); i++) {
 			p.setColumn(i);
 			if (getBoard().haveAPiece(p)) {

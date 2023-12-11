@@ -109,7 +109,21 @@ public class ChessMatch {
 		return board.getPiece(source).possibleMoves();
 	}
 	
-	
+	//@ requires board.getPiece(sourcePosition.toPosition()) != null;
+	//@ requires board.getPiece(sourcePosition.toPosition()).possibleMove(targetPosition.toPosition());
+	//@ assignable check, promoted;
+	//@ also
+	//@ requires board.getPiece(sourcePosition.toPosition()) != null;
+	//@ requires board.getPiece(sourcePosition.toPosition()).possibleMove(targetPosition.toPosition());
+	//@ requires (testCheck(getOpponent(currentPlayer)));
+	//@ assignable check, promoted;
+	//@ ensures check == true;
+	//@ also
+	//@ requires board.getPiece(sourcePosition.toPosition()) != null;
+	//@ requires board.getPiece(sourcePosition.toPosition()).possibleMove(targetPosition.toPosition());
+	//@ requires !(testCheck(getOpponent(currentPlayer)));
+	//@ assignable check, promoted;
+	//@ ensures check == false;
 	public Piece chessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
 		Position source = sourcePosition.toPosition();
 		Position target = targetPosition.toPosition();
@@ -261,7 +275,11 @@ public class ChessMatch {
 		return capturedPiece;
 	}
 	
-	
+	//@ requires board.getPiece(source) == null;
+	//@ requires board.getPiece(source).getMoveCount() > 0;
+	//@ requires capturedPiece == null;
+	//@ assignable board;
+	//@ ensures board.getPiece(source).getMoveCount() == \old(board.getPiece(source).getMoveCount()) - 1;
 	private void undoMove(Position source, Position target, Piece capturedPiece) {
 		Piece p = board.removePiece(target);
 		p.decreaseMoveCount();
@@ -309,7 +327,7 @@ public class ChessMatch {
 	
 	//@ ensures searchKing(color) != null;
 	//@ pure
-	private boolean testCheck(Color color) {
+	/*@ spec_public */ private boolean testCheck(Color color) {
 		Position kingPosition = searchKing(color).getChessPosition().toPosition();
 		List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> x.getColor() == getOpponent(color)).collect(Collectors.toList());
 		//@ maintaining 0 <= \count <= opponentPieces.size();
@@ -359,10 +377,12 @@ public class ChessMatch {
 	}
 	
 	//@ requires currentPlayer == Color.WHITE;
+	//@ assignable turn, currentPlayer;
 	//@ ensures turn == \old(turn) + 1;
 	//@ ensures currentPlayer == Color.BLACK;
 	//@ also
 	//@ requires currentPlayer == Color.BLACK;
+	//@ assignable turn, currentPlayer;
 	//@ ensures turn == \old(turn) + 1;
 	//@ ensures currentPlayer == Color.WHITE;
 	private void nextTurn() {
@@ -374,8 +394,9 @@ public class ChessMatch {
 	//@ ensures \result == Color.BLACK;
 	//@ also
 	//@ requires color == Color.BLACK;
-	//@ ensures \result == Color.WHITE;	
-	private Color getOpponent(Color color) {
+	//@ ensures \result == Color.WHITE;
+	//@ pure
+	/*@ spec_public */private Color getOpponent(Color color) {
 		return (color == color.WHITE) ? Color.BLACK : Color.WHITE;
 	}
 	
@@ -397,6 +418,7 @@ public class ChessMatch {
 	
 	//@ requires 0 <= col <= 7;
 	//@ requires 0 <= col <= 7;
+	//@ assignable board, piecesOnTheBoard;
 	//@ ensures board.getPiece(row, col) != null;
 	//@ ensures piecesOnTheBoard.size() > 0;
 	private void placeNewPiece(char col, int row, /* non_null */ Piece piece) {
