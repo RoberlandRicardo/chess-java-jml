@@ -16,9 +16,9 @@ public class ChessMatch {
 	//@ spec_public
 	private int turn;
 	//@ spec_public
-	private /* non_null */ Color currentPlayer;
+	private /*@ non_null */ Color currentPlayer;
 	//@ spec_public
-	private /* non_null */ Board board;
+	private /*@ non_null */ Board board;
 	//@ spec_public
 	private boolean check;
 	//@ spec_public
@@ -31,7 +31,7 @@ public class ChessMatch {
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
 	private List<Piece> capturedPieces = new ArrayList<>();
 	
-	// public invariant 1 <= turn;
+	//@ public invariant 1 <= turn;
 	
 	//@ ensures \result == this.turn;
 	public int getTurn() {
